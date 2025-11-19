@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from '../types';
-import { LayoutDashboard, ShieldAlert, MessageSquareHeart, Activity, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ShieldAlert, MessageSquareHeart, Activity, Menu, X, Users } from 'lucide-react';
 
 interface SidebarProps {
   currentView: View;
@@ -15,6 +15,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, i
     { id: View.ACTIVITY, label: 'Activity Log', icon: Activity },
     { id: View.ANALYZER, label: 'Safety Scanner', icon: ShieldAlert },
     { id: View.ADVISOR, label: 'Parent Advisor', icon: MessageSquareHeart },
+    { id: View.PROFILES, label: 'Family Profiles', icon: Users },
   ];
 
   return (
@@ -23,7 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, i
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 bg-white rounded-md shadow-md text-slate-700"
+          className="p-2 bg-white rounded-md shadow-md text-slate-700 dark:bg-slate-800 dark:text-slate-200"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>

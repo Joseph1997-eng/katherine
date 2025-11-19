@@ -62,14 +62,16 @@ export const Advisor: React.FC = () => {
       ]);
 
       for await (const chunk of result) {
-        const chunkText = chunk.text(); // Helper from SDK, or use chunk.text
-        fullResponse += chunkText;
-        
-        setMessages((prev) => 
-            prev.map(msg => 
-                msg.id === modelMsgId ? { ...msg, text: fullResponse } : msg
-            )
-        );
+        const chunkText = chunk.text; // Access property directly, do not call as function
+        if (chunkText) {
+          fullResponse += chunkText;
+          
+          setMessages((prev) => 
+              prev.map(msg => 
+                  msg.id === modelMsgId ? { ...msg, text: fullResponse } : msg
+              )
+          );
+        }
       }
       
     } catch (error) {
@@ -96,21 +98,21 @@ export const Advisor: React.FC = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-2rem)] md:h-[calc(100vh-8rem)] flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+    <div className="h-[calc(100vh-2rem)] md:h-[calc(100vh-8rem)] flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+      <div className="p-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex justify-between items-center">
         <div>
-          <h2 className="font-bold text-slate-800 flex items-center gap-2">
-            <Bot className="text-emerald-600" size={20} />
+          <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <Bot className="text-emerald-600 dark:text-emerald-400" size={20} />
             Parenting Advisor
           </h2>
-          <p className="text-xs text-slate-500">AI-powered guidance for digital safety</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">AI-powered guidance for digital safety</p>
         </div>
-        <div className="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full font-medium">
+        <div className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs px-2 py-1 rounded-full font-medium">
           Online
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-slate-50/50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-slate-50/50 dark:bg-slate-900/50">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -120,11 +122,11 @@ export const Advisor: React.FC = () => {
               className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-5 py-3.5 shadow-sm ${
                 msg.role === 'user'
                   ? 'bg-emerald-600 text-white rounded-br-none'
-                  : 'bg-white text-slate-800 border border-slate-100 rounded-bl-none'
+                  : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-600 rounded-bl-none'
               }`}
             >
               {msg.role === 'model' ? (
-                 <div className="prose prose-sm prose-slate max-w-none">
+                 <div className="prose prose-sm prose-slate dark:prose-invert max-w-none">
                     <ReactMarkdown>{msg.text}</ReactMarkdown>
                  </div>
               ) : (
@@ -135,23 +137,23 @@ export const Advisor: React.FC = () => {
         ))}
         {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex justify-start">
-             <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm flex items-center gap-2">
-                <MoreHorizontal className="text-slate-400 animate-pulse" size={20} />
+             <div className="bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm flex items-center gap-2">
+                <MoreHorizontal className="text-slate-400 dark:text-slate-300 animate-pulse" size={20} />
              </div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-white border-t border-slate-100">
+      <div className="p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
         <div className="flex items-end gap-2 max-w-4xl mx-auto">
-          <div className="flex-1 bg-slate-100 rounded-xl p-1 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:bg-white transition-all">
+          <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:bg-white dark:focus-within:bg-slate-800 transition-all">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask about screen time limits, app safety, etc..."
-              className="w-full bg-transparent border-none focus:ring-0 resize-none text-slate-800 placeholder-slate-400 p-3 max-h-32 min-h-[50px] outline-none"
+              className="w-full bg-transparent border-none focus:ring-0 resize-none text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 p-3 max-h-32 min-h-[50px] outline-none"
               rows={1}
             />
           </div>
@@ -160,7 +162,7 @@ export const Advisor: React.FC = () => {
             disabled={!input.trim() || isLoading}
             className={`p-3 rounded-xl transition-all ${
               !input.trim() || isLoading
-                ? 'bg-slate-200 text-slate-400'
+                ? 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
                 : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md'
             }`}
           >
@@ -168,7 +170,7 @@ export const Advisor: React.FC = () => {
           </button>
         </div>
         <div className="text-center mt-2">
-            <p className="text-[10px] text-slate-400">AI can make mistakes. Verify important information.</p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500">AI can make mistakes. Verify important information.</p>
         </div>
       </div>
     </div>

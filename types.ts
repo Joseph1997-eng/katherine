@@ -2,7 +2,8 @@ export enum View {
   DASHBOARD = 'DASHBOARD',
   ANALYZER = 'ANALYZER',
   ADVISOR = 'ADVISOR',
-  ACTIVITY = 'ACTIVITY'
+  ACTIVITY = 'ACTIVITY',
+  PROFILES = 'PROFILES'
 }
 
 export interface AnalysisResult {
@@ -27,4 +28,14 @@ export interface ActivityItem {
   timestamp: string;
   category: 'Education' | 'Entertainment' | 'Social' | 'Game' | 'Utility';
   flagged: boolean;
+}
+
+export interface ChildProfile {
+  id: string;
+  name: string;
+  dob: string; // YYYY-MM-DD
+  avatarColor: string;
+  dailyLimit: number; // minutes
+  bedtime: string;
+  restrictedCategories: string[];
 }
