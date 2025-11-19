@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, Mail, Bell, Shield, Clock, Smartphone, Plus, Save, Trash2, Moon, Laptop, Sparkles, Info, Calendar, Check } from 'lucide-react';
 import { ChildProfile } from '../types';
 
@@ -6,6 +6,7 @@ interface ParentProfile {
   name: string;
   email: string;
   notifications: boolean;
+  pushNotifications: boolean;
   reportFrequency: 'Daily' | 'Weekly';
 }
 
@@ -21,20 +22,26 @@ export const Profiles: React.FC<ProfilesProps> = ({ childProfiles, setChildProfi
     name: 'Sarah Johnson',
     email: 'sarah.j@example.com',
     notifications: true,
+    pushNotifications: false,
     reportFrequency: 'Weekly'
   });
 
   const [editingChildId, setEditingChildId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  // Use ReturnType<typeof setTimeout> to handle both browser (number) and Node (Timeout object) environments without relying on NodeJS namespace
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showToast = (message: string) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
     setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
+    toastTimeoutRef.current = setTimeout(() => setToastMessage(null), 3000);
   };
 
   const handleSaveParent = () => {
     // Simulate API call
-    showToast('Parent profile updated successfully!');
+    showToast('Parent profile settings saved successfully!');
   };
 
   const updateChild = (id: string, updates: Partial<ChildProfile>) => {
@@ -218,14 +225,30 @@ export const Profiles: React.FC<ProfilesProps> = ({ childProfiles, setChildProfi
             
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700">
               <div>
-                <p className="font-medium text-slate-800 dark:text-slate-200">Real-time Alerts</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Get notified immediately about flagged content.</p>
+                <p className="font-medium text-slate-800 dark:text-slate-200">Real-time Email Alerts</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Get notified via email about flagged content.</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input 
                   type="checkbox" 
                   checked={parentProfile.notifications} 
                   onChange={(e) => setParentProfile({...parentProfile, notifications: e.target.checked})}
+                  className="sr-only peer" 
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div>
+                <p className="font-medium text-slate-800 dark:text-slate-200">Push Notifications</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Receive instant alerts on your device.</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={parentProfile.pushNotifications} 
+                  onChange={(e) => setParentProfile({...parentProfile, pushNotifications: e.target.checked})}
                   className="sr-only peer" 
                 />
                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
